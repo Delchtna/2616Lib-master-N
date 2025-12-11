@@ -165,8 +165,12 @@ void initialize() {
   Auton_Selector::init({
     //Auton_Selector::Auton("Drive example", "Test the .drive(...) method", drive_example),
     //Auton_Selector::Auton("Testing PID", "TO tune the PID method", pid_test),
-    Auton_Selector::Auton("Auton Testing", "To create Autons", auton_test),
-    //Auton_Selector::Auton("Nothing", "Don't do anything! \n:)", nothing)
+    Auton_Selector::Auton("Auton Testing", "To create Autons", auton_test)
+    //Auton_Selector::Auton("Nothing", "Don't do anything! \n:)", nothing),
+    //Auton_Selector::Auton("Top and Mid", "Scoring on Top and Middle! \n:)", top_and_mid),
+    //Auton_Selector::Auton("Top and Bottom", "Scoring on Top and Bottom! \n:)", top_and_bottom),
+    //Auton_Selector::Auton("Left Top", "Scoring all on Left! \n:)", left_top),
+    //Auton_Selector::Auton("Right Top", "Scoring all on Right! \n:)", right_top)
   });
   
   //Comment this out if you aren't using limit switch(es) to select your auton.

@@ -9,3 +9,6 @@ void set_back_roller(int voltage);
 void set_rollers(int voltage);
 void score_mid(int voltage);
 void control_rollers();
+void store_top();
+void score_from_hold();
+void score_bottom(int voltage);

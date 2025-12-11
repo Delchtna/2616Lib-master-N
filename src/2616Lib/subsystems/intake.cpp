@@ -61,24 +61,39 @@ void set_top_rollers(int voltage){
 
   void set_rollers(int voltage){
     set_back_rollers(voltage);
-    set_top_rollers(voltage * .75);
+    set_top_rollers(-voltage);
     set_bottom_rollers(voltage);
   }
 
   void score_mid(int voltage){
     set_back_rollers(voltage);
-    set_top_rollers(-voltage * .5);
-    set_bottom_rollers(voltage * .75);
+    set_top_rollers(voltage *.7);
+    set_bottom_rollers(voltage *.5);
   }
 
   void control_rollers(){
     if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
       set_rollers(12000);
     }else if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
-      score_mid(12000);
+      score_mid(10000);
     }else if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
       set_rollers(-12000);
     }else{
       set_rollers(0);
     }
+  }
+    void store_top(){
+    set_back_rollers(12000 * .5);
+    set_top_rollers(-100);
+    set_bottom_rollers(12000);
+  }
+  void score_from_hold(){
+    set_back_rollers(-12000 * .5);
+    set_top_rollers(-12000);
+    set_bottom_rollers(12000);
+  }
+  void score_bottom(int voltage){
+    set_back_rollers(voltage*7);
+    set_top_rollers(-voltage * .7);
+    set_bottom_rollers(-voltage *.8);
   }

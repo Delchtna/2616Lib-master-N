@@ -21,12 +21,12 @@ void set_default_movement_constants() {
 
   //PID exit conditions
   //These determine when a PID should stop running. If the PID's error is less than `small_error` (in either inches or radians) for at least `exit_time` milliseconds, the PID will stop running.
-  chassis.drive_PID.set_exit_conditions(5, 700, 10, 1500, 0.01, 500);
-  chassis.turn_PID.set_exit_conditions(Util::to_rad(2), 250, Util::to_rad(5), 500, Util::to_rad(1) * 0.01, 500);
+  chassis.drive_PID.set_exit_conditions(1.5, 300, 5, 1000, 0.01, 500);
+  chassis.turn_PID.set_exit_conditions(Util::to_rad(2.5), 250, Util::to_rad(7), 400, Util::to_rad(1) * 0.01, 500);
   chassis.arc_PID.set_exit_conditions(Util::to_rad(2), 500, Util::to_rad(5), 500, Util::to_rad(1) * 0.01, 500);
 
   //Motion profiling - ADVANCED USERS ONLY
-  chassis.path_traverser.set_software_constants(3.9, 1.834, 0.28, 7.55, 0.7, 12, 0, 10, 10, 5);
+  chassis.path_traverser.set_software_constants(13, 1.834, 0.28, 7.55, 0.7, 12, 0, 10, 10, 5);
   chassis.path_traverser.set_hardware_constants(1.5, 12.8, 4.22);
 }
 
@@ -117,7 +117,7 @@ void motion_profiling_example() {
   //When using `.motion_profiling()`, the robot will generate a path through the specified points and follow it using certain parameters.
   //If only one Point is in the `path`, the robot will drive smoothly to that point. If multiple Points are specified, the robot will attempt to reach all of them smoothly in the specified order.
 
-  chassis.motion_profiling({Point(36, -12)}, -45, 1,0, 50, 55, -35, 10);
+  chassis.motion_profiling({Point(36, -12)}, -90, 1,0, 40, 25, -35, 10);
   chassis.wait_drive();
 
   chassis.motion_profiling({Point(24, 0)}, -45, 1, 0, 50, 25, -25, 10);
@@ -127,27 +127,165 @@ void motion_profiling_example() {
  void pid_test(){
   
   chassis.set_odom_position(0,0,0);
-  chassis.turn(180,90);
+  chassis.arc(-135,Chassis::e_arc_direction::RIGHT, 100);
  }
 
 //This auton isn't actually needed, but can be helpful if your partner wants you to not run any auton, or if you need to run an auton as a test during inspection at the start of a competition.
 void nothing() {}
 
 void auton_test() {
-  chassis.set_odom_position(0,0,0);
-  raise_intake.set_value(true);
-  set_rollers(12000);
-  redirect.set_value(true);
-  chassis.wait_drive();
-  chassis.drive(30, 40);
-  chassis.wait_drive();
-  chassis.turn(65,100);
-  tounge.set_value(true);
-  chassis.wait_drive();
-  chassis.drive(20, 40);
-  redirect.set_value(false);
-  score_mid(12000);
-  
+   chassis.set_odom_position(0,0,0);
+   chassis.drive(2.5,100);
+   chassis.wait_drive();
 }
 
+void top_and_mid(){
+ chassis.set_odom_position(0,0,-12.3);
+  redirect.set_value(true);
+  raise_intake.set_value(true);
+  set_rollers(12000);
+  chassis.drive(33, 100);
+  chassis.wait_drive();
+  chassis.turn(57,120);
+  tounge.set_value(true);
+  chassis.wait_drive();
+  set_rollers(0);
+  redirect.set_value(false);
+  chassis.drive(8.5, 120);
+  pros::delay(200);
+  tounge.set_value(false);
+  chassis.wait_drive();
+  score_mid(12000);
+  pros::delay(1000);
+  tounge.set_value(true);
+  set_rollers(0);
+
+  redirect.set_value(true);
+  chassis.turn(-135,120);
+  chassis.wait_drive();
+  chassis.drive(40.5, 120);
+  chassis.wait_drive();
+  set_rollers(12000);
+  chassis.turn(177,120);
+  chassis.wait_drive();
+
+  chassis.drive(13.5,90);
+  chassis.wait_drive();
+  pros::delay(500);
+
+  chassis.drive(-10,120);
+  tounge.set_value(false);
+  chassis.wait_drive();
+  
+  chassis.turn(-1,120);
+  
+  chassis.wait_drive();
+  chassis.drive(15, 90);
+  redirect.set_value(false); 
+
+  chassis.wait_drive();
+  
+
+}
+void top_and_bottom(){
+ chassis.set_odom_position(0,0,12.3);
+  redirect.set_value(true);
+  raise_intake.set_value(true);
+  set_rollers(12000);
+  chassis.drive(33, 100);
+  chassis.wait_drive();
+  chassis.turn(-57,120);
+  tounge.set_value(true);
+  chassis.wait_drive();
+  set_rollers(0);
+  redirect.set_value(false);
+  chassis.drive(8.5, 120);
+  pros::delay(200);
+  tounge.set_value(false);
+  chassis.wait_drive();
+  score_mid(12000);
+  pros::delay(1000);
+  tounge.set_value(true);
+  set_rollers(0);
+
+  redirect.set_value(true);
+  chassis.turn(135,120);
+  chassis.wait_drive();
+  chassis.drive(41.5, 120);
+  chassis.wait_drive();
+  set_rollers(12000);
+  chassis.turn(-177,120);
+  chassis.wait_drive();
+
+  chassis.drive(13.5,90);
+  chassis.wait_drive();
+  pros::delay(525);
+
+  chassis.drive(-10,120);
+  tounge.set_value(false);
+  chassis.wait_drive();
+  
+  chassis.turn(1,120);
+  
+  chassis.wait_drive();
+  chassis.drive(15, 90);
+  redirect.set_value(false); 
+
+  chassis.wait_drive();
+
+}
+void left_top(){
+  chassis.set_odom_position(0,0,-12.3);
+  redirect.set_value(true);
+  raise_intake.set_value(true);
+  set_rollers(12000);
+  chassis.drive(33, 80);
+  chassis.wait_drive();
+  chassis.turn(-140,100);
+  chassis.wait_drive();
+  chassis.drive(36,100);
+  chassis.wait_drive();
+  chassis.turn(174,100); //this rn
+  chassis.wait_drive();
+  tounge.set_value(true);
+   chassis.drive(13.5,100);
+  chassis.wait_drive();
+  pros::delay(800);
+  chassis.drive(-10,100);
+  tounge.set_value(false);
+  chassis.wait_drive();
+  chassis.turn(3,100);
+  chassis.wait_drive();
+  chassis.drive(15, 90);
+  chassis.wait_drive();
+
+  redirect.set_value(false);
+}
+void right_top(){
+  chassis.set_odom_position(0,0,-12.3);
+  redirect.set_value(true);
+  raise_intake.set_value(true);
+  set_rollers(12000);
+  chassis.drive(33, 80);
+  chassis.wait_drive();
+  chassis.turn(140,100);
+  chassis.wait_drive();
+  chassis.drive(36,100);
+  chassis.wait_drive();
+  chassis.turn(-174,100); //this rn
+  chassis.wait_drive();
+  tounge.set_value(true);
+   chassis.drive(13.5,100);
+  chassis.wait_drive();
+  pros::delay(800);
+  chassis.drive(-10,100);
+  tounge.set_value(false);
+  chassis.wait_drive();
+  chassis.turn(-3,100);
+  chassis.wait_drive();
+  chassis.drive(15, 90);
+  chassis.wait_drive();
+
+  redirect.set_value(false);
+}
 //Add more autons here!
