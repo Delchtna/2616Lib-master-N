@@ -134,13 +134,13 @@ void motion_profiling_example() {
 void nothing() {}
 
 void auton_test() {
-   chassis.set_odom_position(0,0,0);
-   chassis.drive(2.5,100);
-   chassis.wait_drive();
+  
 }
 
+
+
 void top_and_mid(){
- chassis.set_odom_position(0,0,-12.3);
+   chassis.set_odom_position(0,0,-12.3);
   redirect.set_value(true);
   raise_intake.set_value(true);
   set_rollers(12000);
@@ -163,72 +163,67 @@ void top_and_mid(){
   redirect.set_value(true);
   chassis.turn(-135,120);
   chassis.wait_drive();
-  chassis.drive(40.5, 120);
+  chassis.drive(40, 120);
   chassis.wait_drive();
   set_rollers(12000);
   chassis.turn(177,120);
   chassis.wait_drive();
 
-  chassis.drive(13.5,90);
+  chassis.drive(16,90);
   chassis.wait_drive();
-  pros::delay(500);
+  pros::delay(600);
 
   chassis.drive(-10,120);
   tounge.set_value(false);
   chassis.wait_drive();
   
-  chassis.turn(-1,120);
+  chassis.turn(-5,120);
   
   chassis.wait_drive();
-  chassis.drive(15, 90);
+  chassis.drive(14, 90);
   redirect.set_value(false); 
 
   chassis.wait_drive();
-  
 
 }
 void top_and_bottom(){
  chassis.set_odom_position(0,0,12.3);
   redirect.set_value(true);
-  raise_intake.set_value(true);
-  set_rollers(12000);
-  chassis.drive(33, 100);
+  set_rollers(13000);
+  chassis.drive(30, 100);
   chassis.wait_drive();
-  chassis.turn(-57,120);
-  tounge.set_value(true);
+  chassis.turn(-48,120);
   chassis.wait_drive();
-  set_rollers(0);
   redirect.set_value(false);
-  chassis.drive(8.5, 120);
+  chassis.drive(9, 120);
+  set_rollers(0);
   pros::delay(200);
-  tounge.set_value(false);
   chassis.wait_drive();
-  score_mid(12000);
-  pros::delay(1000);
-  tounge.set_value(true);
+  score_bottom(12000);
+  pros::delay(2000);
   set_rollers(0);
 
   redirect.set_value(true);
-  chassis.turn(135,120);
-  chassis.wait_drive();
-  chassis.drive(41.5, 120);
+  
+  chassis.drive(-48, 120);
+  tounge.set_value(true);
   chassis.wait_drive();
   set_rollers(12000);
   chassis.turn(-177,120);
   chassis.wait_drive();
 
-  chassis.drive(13.5,90);
+  chassis.drive(16,85);
   chassis.wait_drive();
-  pros::delay(525);
-
+  pros::delay(600);
+ 
   chassis.drive(-10,120);
   tounge.set_value(false);
   chassis.wait_drive();
   
-  chassis.turn(1,120);
+  chassis.turn(0,120);
   
   chassis.wait_drive();
-  chassis.drive(15, 90);
+  chassis.drive(14, 90);
   redirect.set_value(false); 
 
   chassis.wait_drive();

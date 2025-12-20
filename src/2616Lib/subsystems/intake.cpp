@@ -60,14 +60,14 @@ void set_top_rollers(int voltage){
   }
 
   void set_rollers(int voltage){
-    set_back_rollers(voltage);
-    set_top_rollers(-voltage);
+    set_back_rollers(-voltage);
+    set_top_rollers(voltage);
     set_bottom_rollers(voltage);
   }
 
   void score_mid(int voltage){
-    set_back_rollers(voltage);
-    set_top_rollers(voltage *.7);
+    set_back_rollers(-voltage);
+    set_top_rollers(-voltage *.7);
     set_bottom_rollers(voltage *.5);
   }
 
@@ -93,7 +93,6 @@ void set_top_rollers(int voltage){
     set_bottom_rollers(12000);
   }
   void score_bottom(int voltage){
-    set_back_rollers(voltage*7);
-    set_top_rollers(-voltage * .7);
-    set_bottom_rollers(-voltage *.8);
+    set_back_rollers(-voltage*5);
+    set_bottom_rollers(-voltage);
   }
