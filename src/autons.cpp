@@ -134,13 +134,57 @@ void motion_profiling_example() {
 void nothing() {}
 
 void auton_test() {
+  chassis.set_odom_position(0,0,-12.3);
+  redirect.set_value(true);
+  raise_intake.set_value(true);
+  set_rollers(12000);
+  chassis.drive(33, 100);
+  chassis.wait_drive();
+  chassis.turn(57,120);
+  tounge.set_value(true);
+  chassis.wait_drive();
+  set_rollers(0);
+  redirect.set_value(false);
+  chassis.drive(7.75, 120);
+  pros::delay(200);
+  tounge.set_value(false);
+  chassis.wait_drive();
+  score_mid(12000);
+  pros::delay(1000);
+  tounge.set_value(true);
+  set_rollers(0);
+
+  redirect.set_value(true);
+  chassis.turn(-135,120);
+  chassis.wait_drive();
+  chassis.drive(41.5, 120);
+  chassis.wait_drive();
+  set_rollers(12000);
+  chassis.turn(177,120);
+  chassis.wait_drive();
+
+  chassis.drive(16,50);
+  chassis.wait_drive();
+  pros::delay(575);
+
+  chassis.drive(-10,120);
+  tounge.set_value(false);
+  chassis.wait_drive();
+  
+  chassis.turn(-5,120);
+  
+  chassis.wait_drive();
+  chassis.drive(14, 120);
+  redirect.set_value(false); 
+
+  chassis.wait_drive();
   
 }
 
 
 
 void top_and_mid(){
-   chassis.set_odom_position(0,0,-12.3);
+  chassis.set_odom_position(0,0,-12.3);
   redirect.set_value(true);
   raise_intake.set_value(true);
   set_rollers(12000);
@@ -163,15 +207,15 @@ void top_and_mid(){
   redirect.set_value(true);
   chassis.turn(-135,120);
   chassis.wait_drive();
-  chassis.drive(40, 120);
+  chassis.drive(41.5, 120);
   chassis.wait_drive();
   set_rollers(12000);
   chassis.turn(177,120);
   chassis.wait_drive();
 
-  chassis.drive(16,90);
+  chassis.drive(16,60);
   chassis.wait_drive();
-  pros::delay(600);
+  pros::delay(575);
 
   chassis.drive(-10,120);
   tounge.set_value(false);
@@ -180,11 +224,10 @@ void top_and_mid(){
   chassis.turn(-5,120);
   
   chassis.wait_drive();
-  chassis.drive(14, 90);
+  chassis.drive(14, 120);
   redirect.set_value(false); 
 
   chassis.wait_drive();
-
 }
 void top_and_bottom(){
  chassis.set_odom_position(0,0,12.3);
