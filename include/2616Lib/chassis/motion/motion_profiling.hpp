@@ -4,8 +4,11 @@
 #include "2616Lib/util/simple_moving_average.hpp"
 #include <string>
 #include <vector>
+#include <fstream>
 
 class Motion_Profiling {
+  private:
+    std::ofstream poslog;
   public:
     Motion_Profiling();
     Motion_Profiling(double kP, double kV, double kA);
@@ -58,13 +61,18 @@ class Motion_Profiling {
     //Methods
     void set_trajectory(std::vector<Path_Point>& trajectory);
     void update_trajectory();
-
+    Pose get_target_Pose();
+    double get_target_vel();
+    double get_target_angvel();
     void print_logs();
     void update_path(std::vector<Point>& path);
     void update_path(std::vector<Pose>& path);
     void update_current_point();
     void check_if_at_end();
     bool check_if_update();
+    void start_logging();
+    void log_iteration(double angvel);
+    void stop_logging();
     void set_software_constants(double kP, double kV, double kA, double kS, double zeta, double beta, double  minimum_time_to_update, double distance_threshold, double exit_distance, int sma_period = 5);
     void set_hardware_constants(double ratio, double track_width, double wheel_diameter);
     void set_constraints( double final_angle, double tangent_magnitude,  double v1, double v_max, double a_accel, double a_decel, double w, bool reversed);

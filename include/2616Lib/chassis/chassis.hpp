@@ -10,7 +10,10 @@
 class Chassis {
   public:
     // ************************ CONSTRUCTOR ************************
-
+     void start_logging();
+    void iterate_log(double target_angle);
+    void iterate_log();
+    void stop_log();
     //Main chassis constructor. Odom type is determined by which combination of tracking wheels are enabled
     Chassis(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports, std::vector<int> imu_sensor_ports,
             std::vector<Tracking_Wheel> trackers, bool disable_odom = false);
@@ -117,6 +120,7 @@ class Chassis {
 
 
   private:
+      std::ofstream pidlog;
     //Describes the type of odometry used by this chassis
     enum class e_odom_type { NONE, THREE_WHEEL, TWO_WHEEL, SINGLE_PARALLEL_IMU, DOUBLE_PARALLEL_IMU };
     //Odom type of this chassis - should never change after initialization
@@ -149,7 +153,8 @@ class Chassis {
     bool prefer_calculated_odom_angle = false; //True means odom angle should be calculated using the perpendicular tracking wheels (if possible), false means odom angle should be calculated using IMUs (if possible)
     void odom_task_func();
     void movement_task_func();
-    
+   
+
     //Movement tasks
     void drive_pid_task();
     void turn_pid_task();

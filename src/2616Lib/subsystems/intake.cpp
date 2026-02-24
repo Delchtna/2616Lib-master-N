@@ -1,4 +1,5 @@
 #include "main.h"
+#include "pros/misc.h"
 
 
 //Spin the intake at a certain voltage. Voltage range is [-12000, 12000], and 0 stops the motor.
@@ -18,81 +19,34 @@ void intake_timed(int voltage, long millis) {
 }
 
 //Check for forward or reverse intake buttons being held, and stop moving otherwise
-void control_intake() {
-  
-  if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && !SHIFT_KEY) {
-    set_intake(12000);
-  } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && !SHIFT_KEY) {
-    set_intake(-12000);
-  }else if ( (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1) && SHIFT_KEY)){
-    set_intake(-12000);
+void set_rollers(int voltage){
+  if(voltage ==0 ){
+    roller.move_velocity(0);
+  }else {
+    roller.move_voltage(voltage);
   }
-  
-  else {
+}
 
-    set_intake(0);
-  }
-  
+void set_scoring(int voltage){
+  set_rollers(voltage);
+  set_intake(voltage);
+}
+void control_intake() {
+  if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)||controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
+      set_rollers(12000);
+      set_intake(12000);
+    }else if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
+      set_rollers(-12000);
+      set_intake(-12000);
+    }else{
+      set_rollers(0);
+      set_intake(0);
+    }
+ 
 
 }
 
-void set_top_rollers(int voltage){
-    if(voltage ==0){
-      top_roller.move_velocity(0);
-    }else{
-      top_roller.move_voltage(voltage);
-    }
-  }
-  
-  void set_bottom_rollers(int voltage){
-    if(voltage == 0){
-      bottom_roller.move_velocity(0);
-    }else{
-      bottom_roller.move_voltage(voltage);
-    }
-  }
-  void set_back_rollers(int voltage){
-    if(voltage == 0){
-      back_roller.move_velocity(0);
-    }else{
-      back_roller.move_voltage(voltage);
-    }
-  }
-
-  void set_rollers(int voltage){
-    set_back_rollers(-voltage);
-    set_top_rollers(voltage);
-    set_bottom_rollers(voltage);
-  }
-
-  void score_mid(int voltage){
-    set_back_rollers(-voltage);
-    set_top_rollers(-voltage *.7);
-    set_bottom_rollers(voltage *.5);
-  }
 
   void control_rollers(){
-    if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
-      set_rollers(12000);
-    }else if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
-      score_mid(10000);
-    }else if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
-      set_rollers(-12000);
-    }else{
-      set_rollers(0);
-    }
-  }
-    void store_top(){
-    set_back_rollers(12000 * .5);
-    set_top_rollers(-100);
-    set_bottom_rollers(12000);
-  }
-  void score_from_hold(){
-    set_back_rollers(-12000 * .5);
-    set_top_rollers(-12000);
-    set_bottom_rollers(12000);
-  }
-  void score_bottom(int voltage){
-    set_back_rollers(-voltage*5);
-    set_bottom_rollers(-voltage);
+    
   }

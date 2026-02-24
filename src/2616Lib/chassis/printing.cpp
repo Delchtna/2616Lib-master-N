@@ -168,36 +168,13 @@ void Chassis::draw_field_graphic() {
   //Autonomous field lines
   pros::screen::set_pen(COLOR_WHITE);
   pros::screen::draw_line(FIELD_LEFT_EDGE, FIELD_CENTER_Y+1, FIELD_RIGHT_EDGE, FIELD_CENTER_Y+1); //Bottom center line
-  pros::screen::draw_line(FIELD_LEFT_EDGE, FIELD_CENTER_Y-1, FIELD_RIGHT_EDGE, FIELD_CENTER_Y-1); //Top center line
-  pros::screen::draw_line(FIELD_LEFT_EDGE, FIELD_BOTTOM_EDGE-16, FIELD_RIGHT_EDGE, FIELD_BOTTOM_EDGE-16); 
-  pros::screen::draw_line(FIELD_LEFT_EDGE, FIELD_TOP_EDGE+16, FIELD_RIGHT_EDGE, FIELD_TOP_EDGE+16); 
-  pros::screen::draw_line(FIELD_LEFT_EDGE+16, FIELD_BOTTOM_EDGE, FIELD_LEFT_EDGE+16, FIELD_TOP_EDGE);
-  pros::screen::draw_line(FIELD_RIGHT_EDGE-16, FIELD_BOTTOM_EDGE, FIELD_RIGHT_EDGE-16, FIELD_TOP_EDGE); 
+  pros::screen::draw_line(FIELD_LEFT_EDGE, FIELD_CENTER_Y-1, FIELD_RIGHT_EDGE, FIELD_CENTER_Y-1); //Top center line 
 
   //Draw center hang bar with thick border.
-  pros::screen::set_pen(0x00ECFA0D);
-  for (int i = -2; i <= 2; i++) {
-    pros::screen::draw_line(FIELD_CENTER_X-32, FIELD_CENTER_Y + i, FIELD_CENTER_X, FIELD_CENTER_Y+32+i); 
-    pros::screen::draw_line(FIELD_CENTER_X, FIELD_CENTER_Y -32 + i, FIELD_CENTER_X+32, FIELD_CENTER_Y+i);
-    pros::screen::draw_line(FIELD_CENTER_X, FIELD_CENTER_Y +32 + i, FIELD_CENTER_X+32, FIELD_CENTER_Y+i);
-    pros::screen::draw_line(FIELD_CENTER_X-32, FIELD_CENTER_Y + i, FIELD_CENTER_X, FIELD_CENTER_Y -32 + i); 
-  }
-
+  
   //Draw labels indicating positive/negative zone
-  pros::screen::set_pen(COLOR_BLACK);
-  for (int i = 0; i < 3; i++) {
-    pros::screen::draw_line(FIELD_LEFT_EDGE-i, FIELD_BOTTOM_EDGE-8, FIELD_LEFT_EDGE-i, FIELD_BOTTOM_EDGE); //Top left blue match load
-    pros::screen::draw_line(FIELD_RIGHT_EDGE+i, FIELD_BOTTOM_EDGE-8, FIELD_RIGHT_EDGE+i, FIELD_BOTTOM_EDGE); //Top left blue match load
-    pros::screen::draw_line(FIELD_LEFT_EDGE-i, FIELD_TOP_EDGE+8, FIELD_LEFT_EDGE-i, FIELD_TOP_EDGE); //Top left blue match load
-    pros::screen::draw_line(FIELD_RIGHT_EDGE+i, FIELD_TOP_EDGE+8, FIELD_RIGHT_EDGE+i, FIELD_TOP_EDGE); //Top left blue match load
-
-
-    pros::screen::draw_line(FIELD_LEFT_EDGE, FIELD_BOTTOM_EDGE+i, FIELD_LEFT_EDGE+8, FIELD_BOTTOM_EDGE+i);
-    pros::screen::draw_line(FIELD_LEFT_EDGE, FIELD_TOP_EDGE-i, FIELD_LEFT_EDGE+8, FIELD_TOP_EDGE-i);
-
-    pros::screen::draw_line(FIELD_RIGHT_EDGE, FIELD_BOTTOM_EDGE+i, FIELD_RIGHT_EDGE-8, FIELD_BOTTOM_EDGE+i);
-    pros::screen::draw_line(FIELD_RIGHT_EDGE, FIELD_TOP_EDGE-i, FIELD_RIGHT_EDGE-8, FIELD_TOP_EDGE-i);
-  }
+ 
+  
 }
 
 

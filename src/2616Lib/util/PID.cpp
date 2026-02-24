@@ -1,5 +1,8 @@
 #include "main.h"
 #include "util.hpp"
+#include <fstream>
+
+
 
 PID::PID() {
   reset_variables();
@@ -81,6 +84,7 @@ bool PID::is_settled() {
     }
 
   }
+  //stop_log();
   return (small_time_settled > small_exit_time) || (large_time_settled > large_exit_time) || (derivative_time_settled > derivative_exit_time); 
 }
 

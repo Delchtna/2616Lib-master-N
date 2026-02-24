@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pros/rtos.hpp"
+#include <fstream>
 
 class PID {
   public:
@@ -14,7 +15,9 @@ class PID {
       double kd;
       double start_i;
     };
-
+    void start_logging();
+    void iterate_log();
+    void stop_log();
     //Set exit conditions of PID object
     void set_exit_conditions(float small_error, double small_exit_time, float large_error, double large_exit_time, float derivative_bound, double derivative_exit_time);
     
@@ -53,6 +56,7 @@ class PID {
 
 
   private:
+  
     Constants constants;
     double output;
     double error;

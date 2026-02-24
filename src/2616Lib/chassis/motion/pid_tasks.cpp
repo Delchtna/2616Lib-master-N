@@ -1,17 +1,24 @@
+#include "2616Lib/chassis/chassis.hpp"
+#include "2616Lib/util/util.hpp"
 #include "main.h"
 #include <ostream>
+
 
 //Handle PID and motion profiling movements asynchronously
 void Chassis::movement_task_func() {
   while (true) {
     if (drive_mode == e_drive_mode::STANDBY) {
       //Do nothing
+      stop_log();
     } else if (drive_mode == e_drive_mode::TURN) {
       turn_pid_task();
+      start_logging();
     } else if (drive_mode == e_drive_mode::DRIVE) {
       drive_pid_task();
+      start_logging();
     } else if (drive_mode == e_drive_mode::ARC) {
       arc_pid_task();
+      start_logging();
     } else if (drive_mode == e_drive_mode::MOTION_PROFILING) {
       motion_profiling_task();
     }
@@ -21,9 +28,11 @@ void Chassis::movement_task_func() {
 
 //Compute and normalize output of turn PID
 void Chassis::turn_pid_task() {
+  
   double target_angle_rad =  Util::find_min_angle(target_angle, get_pose().angle);
   turn_PID.set_target(target_angle_rad);
   turn_PID.compute(0);
+  
 
 
   double out = Util::clip(turn_PID.get_output(), turn_PID.get_max_speed(), -turn_PID.get_max_speed());
@@ -33,6 +42,7 @@ void Chassis::turn_pid_task() {
 
 //Compute and normalize output of drive PID
 void Chassis::drive_pid_task() {
+ 
   int sgn = 1;
   double l_output, r_output;
 
@@ -41,7 +51,7 @@ void Chassis::drive_pid_task() {
   double x_error = target_pose.x - get_pose().x;
   double y_error = target_pose.y - get_pose().y;
   double target_angle_rad = atan2(x_error, y_error);
-
+  
   bool x_sgn_not_equal = Util::sgn(x_error) != starting_x_error_sgn;
   bool y_sgn_not_equal = Util::sgn(y_error) != starting_y_error_sgn;
 

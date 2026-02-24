@@ -14,7 +14,3 @@ void motion_profiling_example();
 void nothing();
 void pid_test();
 void auton_test();
-void top_and_bottom();
-void top_and_mid();
-void left_top();
-void right_top();

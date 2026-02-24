@@ -18,7 +18,6 @@
 #include "2616Lib/subsystems/catapult.hpp"
 #include "pros/motors.h"
 
-
 /**************************************************************************************/
 /*              All of the port names and numbers below are examples, so              */
 /*                be sure to change them based on your specific robot!                */
@@ -35,40 +34,39 @@
 
 
 // ************* Motor Ports *************
-#define INTAKE_PORT 99
-#define TOP_ROLLER_PORT 9 
-#define BOTTOM_ROLLER_PORT 2
-#define BACK_ROLLER_PORT 14
+#define INTAKE_PORT 3
+#define TOP_ROLLER_PORT 1
+
 //You don't need to define both a motor and piston indexer, so remove what you aren't using
 #define INDEXER_MOTOR_PORT 99
 #define FLYWHEEL_PORT 99
 #define CATAPULT_PORT 99
 
-#define SHIFT_KEY controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)
+
 
 // ************* Sensor Ports *************
-#define IMU_PORT_1 1
-#define IMU_PORT_2 8
-#define THREE_WIRE_EXPANDER_PORT 21
+#define IMU_PORT_1 13
+#define IMU_PORT_2 14
+#define THREE_WIRE_EXPANDER_PORT 2
 //Change these tracker ports based on the type of odom sensor you're using
-#define PERPENDICULAR_TRACKER_PORT 5
-#define PARALLEL_TRACKER_PORT 4
+#define PERPENDICULAR_TRACKER_PORT 11
+#define PARALLEL_TRACKER_PORT 12
 #define LEFT_TRACKER_PORT_TOP 'A'
-#define LEFT_TRACKER_PORT_BOTTOM 'B'
-#define CATAPULT_LIMIT_SWITCH_PORT 'H'
+#define LEFT_TRACKER_PORT_BOTTOM 'A'
+#define CATAPULT_LIMIT_SWITCH_PORT 'A'
 
 
 // ************* Piston Ports *************
 //These are examples of how to define piston ports. If you don't have any pistons, you can remove these.
-#define INDEXER_PISTON_PORT 'G'
-#define EXPANSION_PORT 'C'
-#define ANGLE_CHANGER_PORT 'D'
+#define INDEXER_PISTON_PORT 'A'
+#define EXPANSION_PORT 'A'
+#define ANGLE_CHANGER_PORT 'A'
 
 
 
 // ************* Subsystem Objects *************
 //If your robot has a flywheel, uncomment the `extern Flywheel flywheel; line below, the matching `Flywheel flywheel(...);` line in main.cpp below the Chassis constructor, and the `flywheel.set_pidf_constants(...)` line in main.cpp in `initialize()`.
-extern Flywheel flywheel;
+//extern Flywheel flywheel;
 //If your robot has a catapult, uncomment BOTH this line and the matching line `Catapult catapult(...);` in main.cpp below the Chassis constructor.
 // extern Catapult catapult;
 
@@ -76,25 +74,23 @@ extern Flywheel flywheel;
 // ************* Motor Objects *************
 inline pros::Motor intake(INTAKE_PORT, pros::E_MOTOR_GEAR_600);
 inline pros::Motor indexer_motor(INDEXER_MOTOR_PORT, pros::E_MOTOR_GEAR_600);
-inline pros::Motor top_roller(TOP_ROLLER_PORT, pros::E_MOTOR_GEAR_600);
-inline pros::Motor bottom_roller(BOTTOM_ROLLER_PORT, pros::E_MOTOR_GEAR_600);
-inline pros::Motor back_roller(BACK_ROLLER_PORT, pros::E_MOTOR_GEAR_600);
+inline pros::Motor roller(TOP_ROLLER_PORT, pros::E_MOTOR_GEAR_600);
 
 
 
 
 // ************* Piston Objects *************
-// inline pros::ADIDigitalOut indexer_piston(INDEXER_PISTON_PORT);
-// inline pros::ADIDigitalOut expansion_piston(EXPANSION_PORT);
-// inline pros::ADIDigitalOut angle_changer_piston(ANGLE_CHANGER_PORT);
-inline pros::ADIDigitalOut left_wing('C');
-inline pros::ADIDigitalOut right_wing('C');
-inline pros::ADIDigitalOut back_wing('C');
-inline pros::ADIDigitalOut endgame('C');
-inline pros::ADIDigitalOut low_hang('C');
-inline pros::ADIDigitalOut redirect('B');
-inline pros::ADIDigitalOut tounge('D');
-inline pros::ADIDigitalOut raise_intake('E');
+
+
+inline pros::ext_adi_port_pair_t ext_tounge(THREE_WIRE_EXPANDER_PORT,'A');
+inline pros::ADIDigitalOut tounge(ext_tounge);
+inline pros::ext_adi_port_pair_t ext_descore(THREE_WIRE_EXPANDER_PORT,'B');
+inline pros::ADIDigitalOut descore(ext_descore);
+inline pros::ADIDigitalOut roller_lift('D');
+inline pros::ADIDigitalOut holder('C');
+inline pros::ext_adi_port_pair_t ext_descore_lift(THREE_WIRE_EXPANDER_PORT, 'D');
+inline pros::ADIDigitalOut descore_lift(ext_descore_lift);
+inline pros::ADIDigitalOut piston_odom('B');
 
 // ************* Sensor Objects *************
 // inline pros::ADIDigitalIn auton_limit_switch_up('H');

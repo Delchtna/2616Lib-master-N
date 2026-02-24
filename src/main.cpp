@@ -1,8 +1,11 @@
 #include "main.h"
+#include "2616Lib/chassis/motion/motion_profiling.hpp"
 #include "2616Lib/subsystems/intake.hpp"
 #include "2616Lib/util/util.hpp"
 #include "autons.hpp"
-
+#include "globals.hpp"
+#include "pros/screen.h"
+#include <fstream>
 
 /*********************************************************************************/
 /*      This file is where you initialize the systems on your robot, set up      */
@@ -14,12 +17,14 @@
 // ******************** Chassis Motor Ports ********************
 
 //For more info about what these numbers mean, see globals.hpp
-#define LEFT_FRONT_PORT -16
-#define LEFT_CENTER_PORT -19
-#define LEFT_BACK_PORT 20
-#define RIGHT_FRONT_PORT 3
-#define RIGHT_CENTER_PORT 12
-#define RIGHT_BACK_PORT -6
+#define LEFT_FRONT_PORT -19
+#define LEFT_CENTER_PORT -20
+#define LEFT_BACK_PORT 18
+#define RIGHT_FRONT_PORT 15 
+#define RIGHT_CENTER_PORT 16 
+#define RIGHT_BACK_PORT -17
+
+
 
 
 
@@ -38,7 +43,7 @@ inline Chassis chassis (
   //IMU ports - if none, leave the list empty
   , { IMU_PORT_1, IMU_PORT_2 }
 
-
+  
   /**********************************************************************/
   /*                                                                    */
   /*         THE REST OF THE CHASSIS OBJECT SETUP IS RELATED TO         */
@@ -73,8 +78,8 @@ inline Chassis chassis (
   //Below is an example of how to define each Tracking_Wheel type. Typically, your Tracking_Wheels will all use the same sensor type and wheel diameter. Dedicated tracking wheels typically use rotation sensors and 2.75" wheels.
   , {
       //Perpendicular tracking wheel
-    Tracking_Wheel(Tracking_Wheel::e_tracker_type::PERPENDICULAR, pros::Rotation(abs(PERPENDICULAR_TRACKER_PORT)), true, 2, 7.3),
-    Tracking_Wheel(Tracking_Wheel::e_tracker_type::LEFT, pros::Rotation(abs(PARALLEL_TRACKER_PORT)), false, 2, 1.25),
+    Tracking_Wheel(Tracking_Wheel::e_tracker_type::PERPENDICULAR, pros::Rotation(abs(PERPENDICULAR_TRACKER_PORT)), true, 2, 6),
+    Tracking_Wheel(Tracking_Wheel::e_tracker_type::LEFT, pros::Rotation(abs(PARALLEL_TRACKER_PORT)), false, 2, .5),
 
       //Left tracking wheel
     // , Tracking_Wheel(Tracking_Wheel::e_tracker_type::LEFT, pros::ADIEncoder(LEFT_TRACKER_PORT_TOP, LEFT_TRACKER_PORT_BOTTOM, false), 2.75, 3.5)
@@ -111,6 +116,10 @@ Flywheel flywheel({ -FLYWHEEL_PORT }, 0.25, pros::motor_gearset_e_t::E_MOTOR_GEA
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+  //roller_lift.set_value(true);
+  holder.set_value(true);
+  
+  
   /************************************************************/
   /*               USER CONFIGURATION FUNCTIONS               */
   /************************************************************/
@@ -164,9 +173,9 @@ void initialize() {
   //To change the selected auton, you can tap on either of the colored rectangle buttons on the bottom left corner of the brain screen when the program is running. The selected auton will be printed on both the brain screen and on your controller.
   Auton_Selector::init({
     //Auton_Selector::Auton("Drive example", "Test the .drive(...) method", drive_example),
-    //Auton_Selector::Auton("Testing PID", "TO tune the PID method", pid_test),
-    Auton_Selector::Auton("Auton Testing", "To create Autons", auton_test)
-    //Auton_Selector::Auton("Nothing", "Don't do anything! \n:)", nothing),
+    //Auton_Selector::Auton("Testing PID", "TO tune the PID method", pid_test)
+  Auton_Selector::Auton("Auton Testing", "To create Autons", auton_test)
+    //Auton_Selector::Auton("Nothing", "Don't do anything! \n:)", nothing)
     //Auton_Selector::Auton("Top and Mid", "Scoring on Top and Middle! \n:)", top_and_mid),
     //Auton_Selector::Auton("Top and Bottom", "Scoring on Top and Bottom! \n:)", top_and_bottom),
     //Auton_Selector::Auton("Left Top", "Scoring all on Left! \n:)", left_top),
@@ -183,6 +192,9 @@ void initialize() {
 
   //DO NOT CHANGE THIS LINE!
   chassis.start_tasks();
+  
+
+  
 }
 
 /**
@@ -250,13 +262,13 @@ void opcontrol() {
 
     chassis.tank_drive();
     // chassis.arcade_drive();
-    control_rollers();
-    bool intake_state = false;
-    bool tounge_state = false;
-    bool redirect_state = false;
-    control_raise_intake();
+    control_intake();
+  
+    control_holder();
+    control_descore();
+    control_lift();
     control_tounge();
-    control_redirect();
+    piston_odom.set_value(true);
 
     /*
     // L1 --> forward, L2 --> backward, intake

@@ -1,6 +1,6 @@
 #include "main.h"
 #include <cmath>
-
+#include <fstream>
 
 //Move the left side and right side drive motors at specific speeds within [-127, 127]
 void Chassis::set_tank(double left, double right) {
@@ -15,11 +15,38 @@ void Chassis::set_tank(double left, double right) {
   }
 }
 
+void Chassis::start_logging() {
+    
+    }
 
+void Chassis::iterate_log(double target_angle) {
+   if(drive_mode == e_drive_mode::TURN){
+    pidlog << (pros::millis()/1000.00) << ","
+             << 0 << "," << 0 << ","
+             << chassis.get_pose().angle << ","
+             << 0 << ","
+             << Util::to_deg(target_angle) <<"\n";
+      pidlog.flush();
+   }
+  }
+void Chassis::iterate_log(){
+  if(drive_mode == e_drive_mode::TURN){
+    pidlog << (pros::millis()/1000.00) << ","
+             << chassis.get_pose().x<< "," << chassis.get_pose().y<< ","
+             << chassis.get_pose().angle << ","
+             << target_pose.x << "," << target_pose.y<<","<<
+             target_pose.angle <<"\n";
+      pidlog.flush();
+   }  
+}
+void Chassis::stop_log() {
+    if(pidlog.is_open()) pidlog.close();
+}
 
 // ************************ DRIVE METHODS ************************
 
 void Chassis::drive(double distance, float speed, float min_speed) {
+  
   reversed = Util::sgn(distance);
   target_pose =  Pose(sin(get_pose().angle) * distance + get_pose().x, cos(get_pose().angle) * distance + get_pose().y, Util::to_deg(get_pose().angle));
   
@@ -196,32 +223,35 @@ void Chassis::move_to_point(double xcoord, double ycoord, float speed,  float mi
 void Chassis::wait_drive() {
   //Minimum movement time
   pros::delay(300); 
-  
+ 
   if (drive_mode == e_drive_mode::DRIVE) {
     while (!drive_PID.is_settled()) {
+      iterate_log();
       pros::delay(Util::DELAY_TIME);
     }
     set_drive_mode(e_drive_mode::STANDBY);
-    
+    //stop_log();
     //Reset drive and heading PID variables
     drive_PID.reset_variables();
     heading_PID.reset_variables();
 
   } else if (drive_mode == e_drive_mode::TURN) {
     while (!turn_PID.is_settled()) {
+      //iterate_log();
       pros::delay(Util::DELAY_TIME);
     }
     set_drive_mode(e_drive_mode::STANDBY);
-    
+     //stop_log();
     //Reset turn PID variables
     turn_PID.reset_variables();
       
  } else if (drive_mode == e_drive_mode::ARC) {
     while (!arc_PID.is_settled()) {
+     // iterate_log();
       pros::delay(Util::DELAY_TIME);
     }
     set_drive_mode(e_drive_mode::STANDBY);
-    
+    // stop_log();
     //Reset arc PID variables
     arc_PID.reset_variables();
       
