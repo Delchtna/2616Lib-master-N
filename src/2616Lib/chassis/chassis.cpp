@@ -234,8 +234,8 @@ void Chassis::turn_test(double volts){
 
     double d_theta = Util::to_rad(get_imu_rotation());
     double total_right_dist = perpendicular_tracker.get_status().first;
-
-    std::cout << (left-right)/d_theta << " " << total_right_dist / d_theta<< std::endl;
+    double total_left_dist = left_tracker.get_status().first;
+    std::cout << (left-right)/d_theta << ", " << total_right_dist / d_theta<< ","<<total_left_dist/d_theta<< std::endl;
     pros::delay(50);
   }
 }

@@ -31,11 +31,11 @@ class Motion_Profiling {
     double current_v;
     bool running;
     double current_angle, last_angle;
-    
+    std::string data_buffer;
     std::vector<std::string> log_data;
 
     double starting_position;
-    double kP, kV, kA, kS;
+    double kP, kV,kV_L, kV_R, kA, kS, kP_theta, kD_theta;
     double zeta, beta;
     double ratio, track_width, wheel_diameter;
     bool at_end;
@@ -71,13 +71,14 @@ class Motion_Profiling {
     void check_if_at_end();
     bool check_if_update();
     void start_logging();
-    void log_iteration(double angvel);
+    void log_iteration(double angvel, double leftvel, double rightvel, double laccel, double raccel);
     void stop_logging();
-    void set_software_constants(double kP, double kV, double kA, double kS, double zeta, double beta, double  minimum_time_to_update, double distance_threshold, double exit_distance, int sma_period = 5);
+     void set_software_constants(double kP, double kV_L, double kV_R, double kA, double kS, double zeta, double beta, double  minimum_time_to_update, double distance_threshold, double exit_distance, int sma_period = 5);
+    void set_software_constants(double kP, double kV_L, double kV_R, double kA, double kS, double zeta, double beta, double kP_theta, double  minimum_time_to_update, double distance_threshold, double exit_distance, int sma_period = 5);
     void set_hardware_constants(double ratio, double track_width, double wheel_diameter);
     void set_constraints( double final_angle, double tangent_magnitude,  double v1, double v_max, double a_accel, double a_decel, double w, bool reversed);
     void calculate_wheel_speeds();
-
+    int log_count;
     void run_ramsete_controller();
 };
 

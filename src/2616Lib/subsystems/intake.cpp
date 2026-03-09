@@ -31,6 +31,10 @@ void set_scoring(int voltage){
   set_rollers(voltage);
   set_intake(voltage);
 }
+void set_scoring(int v1, int v2){
+  set_rollers(v1);
+  set_intake(v2);
+}
 void control_intake() {
   if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)||controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
       set_rollers(12000);
@@ -47,6 +51,3 @@ void control_intake() {
 }
 
 
-  void control_rollers(){
-    
-  }

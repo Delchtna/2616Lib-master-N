@@ -69,7 +69,7 @@ namespace Path_Generation {
     for (const Quintic_Bezier& curve : path) {
       arc_length += curve.calc_arc_length();
     }
-
+    std::cout<<"arcLength"<<arc_length<<"\n";
 
     for (const Quintic_Bezier& curve : path) {
       double t = 0;
@@ -119,8 +119,12 @@ namespace Path_Generation {
         last_velocity = velocity;
         last_w = w;
       }
+      
     }
-
+    std::cout << "final s: " << s << "\n";
+    if (!steps.empty()) {
+      std::cout << "last steps.back().s: " << steps.back().s << "\n";
+    }
 
     return steps;
   }

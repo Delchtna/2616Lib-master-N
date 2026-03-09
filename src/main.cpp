@@ -1,11 +1,16 @@
 #include "main.h"
+#include "2616Lib/chassis/chassis.hpp"
 #include "2616Lib/chassis/motion/motion_profiling.hpp"
 #include "2616Lib/subsystems/intake.hpp"
 #include "2616Lib/util/util.hpp"
 #include "autons.hpp"
 #include "globals.hpp"
 #include "pros/screen.h"
+#include "pros/screen.hpp"
 #include <fstream>
+#include "2616Lib/subsystems/pistons.hpp"
+#include "2616Lib/subsystems/sensor.hpp"
+
 
 /*********************************************************************************/
 /*      This file is where you initialize the systems on your robot, set up      */
@@ -78,8 +83,8 @@ inline Chassis chassis (
   //Below is an example of how to define each Tracking_Wheel type. Typically, your Tracking_Wheels will all use the same sensor type and wheel diameter. Dedicated tracking wheels typically use rotation sensors and 2.75" wheels.
   , {
       //Perpendicular tracking wheel
-    Tracking_Wheel(Tracking_Wheel::e_tracker_type::PERPENDICULAR, pros::Rotation(abs(PERPENDICULAR_TRACKER_PORT)), true, 2, 6),
-    Tracking_Wheel(Tracking_Wheel::e_tracker_type::LEFT, pros::Rotation(abs(PARALLEL_TRACKER_PORT)), false, 2, .5),
+    Tracking_Wheel(Tracking_Wheel::e_tracker_type::PERPENDICULAR, pros::Rotation(abs(PERPENDICULAR_TRACKER_PORT)), false, 2, 6.65),
+    Tracking_Wheel(Tracking_Wheel::e_tracker_type::LEFT, pros::Rotation(abs(PARALLEL_TRACKER_PORT)), false, 2,.21),
 
       //Left tracking wheel
     // , Tracking_Wheel(Tracking_Wheel::e_tracker_type::LEFT, pros::ADIEncoder(LEFT_TRACKER_PORT_TOP, LEFT_TRACKER_PORT_BOTTOM, false), 2.75, 3.5)
@@ -116,9 +121,10 @@ Flywheel flywheel({ -FLYWHEEL_PORT }, 0.25, pros::motor_gearset_e_t::E_MOTOR_GEA
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-  //roller_lift.set_value(true);
+  //piston_odom.set_value(true);
+  //roller_lift.set_value(false);
   holder.set_value(true);
-  
+  tounge.set_value(false);
   
   /************************************************************/
   /*               USER CONFIGURATION FUNCTIONS               */
@@ -252,6 +258,7 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+  int ballcount = 0;
   //DO NOT CHANGE THESE LINES!
   chassis.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   chassis.set_drive_mode(Chassis::e_drive_mode::STANDBY);
@@ -259,17 +266,16 @@ void opcontrol() {
 
   while (true) {
     //todo add docs about what can be changed here
-
+    
     chassis.tank_drive();
     // chassis.arcade_drive();
     control_intake();
-  
+    
     control_holder();
     control_descore();
     control_lift();
     control_tounge();
-    piston_odom.set_value(true);
-
+  
     /*
     // L1 --> forward, L2 --> backward, intake
 		endgameExpansion(); // X and Up

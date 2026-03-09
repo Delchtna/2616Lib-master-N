@@ -41,7 +41,7 @@
 #define INDEXER_MOTOR_PORT 99
 #define FLYWHEEL_PORT 99
 #define CATAPULT_PORT 99
-
+#define PERP_DISTANCE_SENSOR_PORT 6
 
 
 // ************* Sensor Ports *************
@@ -75,13 +75,12 @@
 inline pros::Motor intake(INTAKE_PORT, pros::E_MOTOR_GEAR_600);
 inline pros::Motor indexer_motor(INDEXER_MOTOR_PORT, pros::E_MOTOR_GEAR_600);
 inline pros::Motor roller(TOP_ROLLER_PORT, pros::E_MOTOR_GEAR_600);
-
-
+inline pros::Distance perp_sensor(PERP_DISTANCE_SENSOR_PORT);
 
 
 // ************* Piston Objects *************
 
-
+inline pros::ext_adi_port_pair_t ext_piston_odom(THREE_WIRE_EXPANDER_PORT,'H');
 inline pros::ext_adi_port_pair_t ext_tounge(THREE_WIRE_EXPANDER_PORT,'A');
 inline pros::ADIDigitalOut tounge(ext_tounge);
 inline pros::ext_adi_port_pair_t ext_descore(THREE_WIRE_EXPANDER_PORT,'B');
@@ -90,8 +89,12 @@ inline pros::ADIDigitalOut roller_lift('D');
 inline pros::ADIDigitalOut holder('C');
 inline pros::ext_adi_port_pair_t ext_descore_lift(THREE_WIRE_EXPANDER_PORT, 'D');
 inline pros::ADIDigitalOut descore_lift(ext_descore_lift);
-inline pros::ADIDigitalOut piston_odom('B');
+inline pros::ADIDigitalOut piston_odom(ext_piston_odom);
 
+inline pros::ext_adi_port_pair_t ball_tracking(THREE_WIRE_EXPANDER_PORT, 'G');
+inline pros::ADIDigitalIn ball_track(ball_tracking);
 // ************* Sensor Objects *************
-// inline pros::ADIDigitalIn auton_limit_switch_up('H');
-// inline pros::ADIDigitalIn auton_limit_switch_down('G');
+ //inline pros::ADIDigitalIn auton_limit_switch_up('H');
+ //inline pros::ADIDigitalIn auton_limit_switch_down('G');
+ inline pros::ADIDigitalIn ballinput('A');
+ inline pros::ADIDigitalIn balloutput('B');

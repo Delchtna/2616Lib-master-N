@@ -83,7 +83,14 @@ void Chassis::drive(Pose pose, float speed, bool drive_reversed, float min_speed
 
   double distance = std::hypot(x_error, y_error);
   double target_angle_rad = atan2(x_error, y_error);
-
+  if (drive_reversed) {
+    if (target_angle_rad <= 0) {
+      target_angle_rad += M_PI;
+    } else {
+      target_angle_rad -= M_PI;
+    }
+  }
+  
   target_pose = pose;
 
   drive_PID.set_target(distance);
@@ -95,6 +102,8 @@ void Chassis::drive(Pose pose, float speed, bool drive_reversed, float min_speed
 }
 
 void Chassis::drive(Point point, float speed, bool drive_reversed, float min_speed) {
+  std::cout << "something was done" << std::endl;
+  std::cout << point.x << " " << point.y << std::endl;
   if (drive_reversed){
     reversed = -1;
   }else{
@@ -103,12 +112,20 @@ void Chassis::drive(Point point, float speed, bool drive_reversed, float min_spe
 
   double x_error = point.x - get_pose().x;
   double y_error = point.y - get_pose().y;
+  std::cout << x_error << " " << y_error << std::endl;
 
   this->starting_x_error_sgn = Util::sgn(x_error);
   this->starting_y_error_sgn = Util::sgn(y_error);
 
   double distance = std::hypot(x_error, y_error);
   double target_angle_rad = atan2(x_error, y_error);
+  if (drive_reversed) {
+    if (target_angle_rad <= 0) {
+      target_angle_rad += M_PI;
+    } else {
+      target_angle_rad -= M_PI;
+    }
+  }
   
   target_pose = Pose(point.x, point.y, Util::to_deg(target_angle_rad));
   drive_PID.set_target(distance);
@@ -226,7 +243,7 @@ void Chassis::wait_drive() {
  
   if (drive_mode == e_drive_mode::DRIVE) {
     while (!drive_PID.is_settled()) {
-      iterate_log();
+     
       pros::delay(Util::DELAY_TIME);
     }
     set_drive_mode(e_drive_mode::STANDBY);
@@ -255,10 +272,17 @@ void Chassis::wait_drive() {
     //Reset arc PID variables
     arc_PID.reset_variables();
       
+
   } else if (drive_mode == e_drive_mode::MOTION_PROFILING) {
-    while (!path_traverser.at_end) {
+    while (drive_mode == e_drive_mode::MOTION_PROFILING && !path_traverser.at_end) {
       pros::delay(Util::DELAY_TIME);
     }
+
+    if (drive_mode != e_drive_mode::MOTION_PROFILING) {
+      wait_drive();
+      return;
+    }
+
     set_drive_mode(e_drive_mode::STANDBY);
   }
 

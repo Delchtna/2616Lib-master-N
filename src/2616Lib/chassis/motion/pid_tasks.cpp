@@ -6,23 +6,27 @@
 
 //Handle PID and motion profiling movements asynchronously
 void Chassis::movement_task_func() {
+  const std::uint32_t period_ms = 10;
+  std::uint32_t next_wake = pros::millis();
   while (true) {
+    // std::cout<<"("<<pros::millis()/1000<<","<<chassis.get_pose().x<<")"<<'\n';
     if (drive_mode == e_drive_mode::STANDBY) {
       //Do nothing
-      stop_log();
+      //stop_log();
     } else if (drive_mode == e_drive_mode::TURN) {
       turn_pid_task();
-      start_logging();
+      //start_logging();
     } else if (drive_mode == e_drive_mode::DRIVE) {
       drive_pid_task();
-      start_logging();
+      //start_logging();
     } else if (drive_mode == e_drive_mode::ARC) {
       arc_pid_task();
-      start_logging();
+      //start_logging();
     } else if (drive_mode == e_drive_mode::MOTION_PROFILING) {
       motion_profiling_task();
     }
-    pros::delay(Util::DELAY_TIME);
+    pros::Task::delay_until(&next_wake, period_ms);
+    //pros::delay(Util::DELAY_TIME);
   }
 }
 
@@ -36,7 +40,7 @@ void Chassis::turn_pid_task() {
 
 
   double out = Util::clip(turn_PID.get_output(), turn_PID.get_max_speed(), -turn_PID.get_max_speed());
-  std::cout << target_angle_rad << " " << 0 << " " << out << std::endl;
+  //std::cout << target_angle_rad << " " << 0 << " " << out << std::endl;
   set_tank(out, -out);
 }
 
@@ -119,7 +123,7 @@ void Chassis::drive_pid_task() {
     if ( fabs(r_output) < drive_PID.get_min_speed()){
       r_output = std::min(fabs(r_output), (double) drive_PID.get_min_speed()) * Util::sgn(r_output);
     }
-
+   
   set_tank(l_output, r_output);
 }
 
