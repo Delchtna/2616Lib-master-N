@@ -118,8 +118,8 @@ void Chassis::set_brake_mode(pros::motor_brake_mode_e_t brake_type) {
 }
 
 //Set active brake power and threshold
-void Chassis::set_active_brake_power(double kP, int threshold) {
-  active_brake_kp = fabs(kP);
+void Chassis::set_active_brake_power(double kD, int threshold) {
+  active_brake_kD = fabs(kD);
   active_brake_threshold = abs(threshold);
 }
 
@@ -145,24 +145,22 @@ void Chassis::tank_drive() {
   int right_stick = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
   
   //Modify joystick input using drive curves
-  int left_power = joystick_curve_function(left_stick);
+  int left_power = joystick_curve_function(left_stick); 
   int right_power = joystick_curve_function(right_stick);
 
   //Both joysticks are less than the threshold, so enable active braking
-  if (active_brake_kp != 0 && abs(left_stick) < active_brake_threshold && abs(right_stick) < active_brake_threshold) {
+  if (active_brake_kD != 0 && abs(left_stick) < active_brake_threshold && abs(right_stick) < active_brake_threshold) {
     //When joysticks are released, run active brake on drive using P loop
     //This works by getting the difference of the left and right tracker to their values before active brake was enabled, then multiplying by kp and -1 to swap the direction
-    set_tank((left_motors.front().get_position() - left_brake_set_point) * active_brake_kp * -1,
-            (right_motors.front().get_position() - right_brake_set_point) * active_brake_kp * -1);
+    set_tank((left_motors.front().get_actual_velocity() - prev_left_vel) * active_brake_kD * -1,
+            (right_motors.front().get_actual_velocity() - prev_right_vel) * active_brake_kD * -1);
   
   } else {
     //Joysticks are past the threshold, so set wheels to joystick power like normal
     set_tank(left_power, right_power);
-
-    //Update the brake set point in ticks so it can be used if active brake turns on
-    left_brake_set_point = left_motors.front().get_position();
-    right_brake_set_point = right_motors.front().get_position();
   }
+  prev_left_vel = left_motors.front().get_actual_velocity();
+  prev_right_vel = right_motors.front().get_actual_velocity();
 }
 
 
@@ -187,20 +185,18 @@ void Chassis::arcade_drive(bool flipped) {
   
   
   //Both joysticks are less than the threshold, so enable active braking
-  if (active_brake_kp != 0 && abs(forward_stick) < active_brake_threshold && abs(turn_stick) < active_brake_threshold) {
+ if (active_brake_kD != 0 && abs(left_stick) < active_brake_threshold && abs(right_stick) < active_brake_threshold) {
     //When joysticks are released, run active brake on drive using P loop
     //This works by getting the difference of the left and right tracker to their values before active brake was enabled, then multiplying by kp and -1 to swap the direction
-    set_tank((left_motors.front().get_position() - left_brake_set_point) * active_brake_kp * -1,
-            (right_motors.front().get_position() - right_brake_set_point) * active_brake_kp * -1);
+    set_tank((left_motors.front().get_actual_velocity() - prev_left_vel) * active_brake_kD * -1,
+            (right_motors.front().get_actual_velocity() - prev_right_vel) * active_brake_kD * -1);
   
   } else {
     //Joysticks are past the threshold, so set wheels to joystick power like normal
     set_tank(forward_power + turn_power, forward_power - turn_power);
-
-    //Update the brake set point in ticks so it can be used if active brake turns on
-    left_brake_set_point = left_motors.front().get_position();
-    right_brake_set_point = right_motors.front().get_position();
   }
+  prev_left_vel = left_motors.front().get_actual_velocity();
+  prev_right_vel = right_motors.front().get_actual_velocity();
 }
 
   //Test to determine relationship between voltage and velocity of the robot.
@@ -281,25 +277,6 @@ double Chassis::joystick_curve_function(double input) {
     return input;
   }
 }
-
-
-//Set the preferred method for tracking the robot's angle. True means odom angle should be tracked using the left and right tracking wheels (if possible), false means odom angle should be tracked using IMUs (if possible)
-void Chassis::prefer_wheel_calculated_odom_angle(bool prefer_wheel_calculation) {
-  //Only prefer a wheel-calculated odom angle if the parameter is true, and if the current odom type supports it
-  //If the parameter is false (meaning IMU is preferred), the overall stored bool will be false
-  if (prefer_wheel_calculation) {
-    if (ODOM_TYPE == e_odom_type::THREE_WHEEL || ODOM_TYPE == e_odom_type::DOUBLE_PARALLEL_IMU) {
-      //This odom type supports a calculated odom angle
-      prefer_calculated_odom_angle = true;
-    } else {
-      //This odom type DOES NOT support a calculated odom angle
-      prefer_calculated_odom_angle = false;
-      printf("The odom angle is set to be calculated using the left and right tracking wheels, but the current odom configuration does not support this! So, the odom angle will be tracked using IMUs instead.\n");
-    }
-  }
-}
-
-
 //Return the average rotation value of all the IMUs in degrees, or PROS_ERR_F if one of the IMUs throws an error
 double Chassis::get_imu_rotation() {
   if (imu_sensors.empty()) { return 0; }
@@ -312,7 +289,6 @@ double Chassis::get_imu_rotation() {
       if (!is_imu_error) { //Only print this error message once per error instead of spamming it
         printf("At least one IMU is throwing an error while getting its rotation!\n");
       }
-      
       is_imu_error = true;
       return 0;
     }

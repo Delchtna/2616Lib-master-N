@@ -87,16 +87,15 @@ class Chassis {
     // ************************ USER INPUT METHODS ************************
 
     //Control driver experience
-    void set_active_brake_power(double kP, int threshold);
+    void set_active_brake_power(double kD, int threshold);
     void set_joystick_curve(double scale, std::string curve_type = "red");
-    void prefer_wheel_calculated_odom_angle(bool prefer_wheel_calculation);
     void tank_drive();
     void arcade_drive(bool flipped = false);
 
 
     // ************************ OTHER METHODS ************************
 
-    //Odom related methods
+    //Odom related  methods
     void start_tasks();
     void wait_drive();
     double get_imu_rotation();
@@ -150,7 +149,6 @@ class Chassis {
     //Odometry
     std::atomic<bool> update_odom; //Atomic because used in multiple concurrent tasks
     bool is_imu_error = false; //Whether any of the IMUs return an error value while getting their rotation
-    bool prefer_calculated_odom_angle = false; //True means odom angle should be calculated using the perpendicular tracking wheels (if possible), false means odom angle should be calculated using IMUs (if possible)
     void odom_task_func();
     void movement_task_func();
    
@@ -171,10 +169,11 @@ class Chassis {
 
     //Active brake
     int active_brake_threshold;
-    double active_brake_kp;
+    double active_brake_kD;
     double left_brake_set_point;
     double right_brake_set_point;
-
+    double prev_right_vel = 0;
+    double prev_left_vel = 0;
     //Joystick curve
     double joystick_curve_scale;
     std::string joystick_curve_type = "red";

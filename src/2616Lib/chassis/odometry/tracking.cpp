@@ -82,7 +82,7 @@ void Chassis::odom_task_func() {
       
       //Get the angle of the robot by reading the IMUs or calculating it based on the left and right sensor values
       total_imu_rotation_deg = get_imu_rotation();
-      if (!imu_sensors.empty() && !is_imu_error && !prefer_calculated_odom_angle) {
+      if (!imu_sensors.empty() && !is_imu_error) {
         //All IMUs are working, and IMUs are the preferred method for tracking the robot's angle
         total_imu_theta = Util::to_rad(total_imu_rotation_deg);
         
